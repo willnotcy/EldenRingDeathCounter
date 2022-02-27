@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{88B294CF-4137-4EBD-A37C-DB20E0BFE0A0}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <LangVersion>9</LangVersion>
     <RootNamespace>EldenRingDeathCounter</RootNamespace>
     <AssemblyName>EldenRingDeathCounter</AssemblyName>

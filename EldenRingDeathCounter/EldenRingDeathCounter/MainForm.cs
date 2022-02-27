@@ -24,10 +24,15 @@ namespace EldenRingDeathCounter
         private readonly KeyboardHookManager khm = new KeyboardHookManager();
         private readonly DeathDetector deathDetector = new DeathDetector();
         private readonly long minTimeSinceLastDeath = 100_000_000;
+        private readonly long minTimeSinceLastUpdate = 50_000_000; // Prevent parry stacking??
+        private ContextMenu cm = new ContextMenu();
         private bool running = true;
         private Thread detectionThread;
         private int refreshRate = 200;
         private long lastDeath = 0;
+
+        private bool debugMode = false;
+        private DebugImageForm debugForm;
 
 
         private int DeathCount { get; set; }
@@ -50,23 +55,47 @@ namespace EldenRingDeathCounter
         {
             Stopwatch sw = new Stopwatch();
 
+            int duplicates = 0;
+            int prevDuplicates = 0;
+            long prevTs = 0;
             int i = 0;
             while(true)
             {
                 sw.Restart();
 
-                if(deathDetector.TryDetectDeath(ScreenGrabber.TakeScreenshot(), out bool dead, out Image<Rgba32> debug))
+                if(deathDetector.TryDetectDeath(ScreenGrabber.TakeScreenshot(), out bool dead, out Image<Rgba32> debug, out int debugPixelCount))
                 {
                     if (dead)
                     {
                         var now = Stopwatch.GetTimestamp();
 
-                        if (now - lastDeath > minTimeSinceLastDeath)
+                        if(now - prevTs > minTimeSinceLastUpdate)
                         {
+                            duplicates = 0;
+                        }
+
+                        if (now - lastDeath > minTimeSinceLastDeath && duplicates > 1)
+                        {
+                            prevDuplicates = duplicates;
+                            duplicates = 0;
                             lastDeath = Stopwatch.GetTimestamp();
                             Console.WriteLine("You died!");
                             IncrementDeathCount();
+                        } else
+                        {
+                            duplicates++;
                         }
+
+
+                        if (debugForm.Visible)
+                        {
+                            debugForm.RefreshImage(debug);
+                            debugForm.UpdatePixelCount(debugPixelCount);
+                            debugForm.UpdateDuplicates(prevDuplicates);
+                        }
+
+
+                        prevTs = now;
                     }
                 }
 
@@ -82,11 +111,17 @@ namespace EldenRingDeathCounter
 
         private void SetupComponents()
         {
+            var debugModeMenuItem = new MenuItem("debug mode");
+            debugModeMenuItem.Click += new System.EventHandler(this.cmsMenuItem_Click);
+            cm.MenuItems.Add(debugModeMenuItem);
+            this.ContextMenu = cm;
+
+            debugForm = new DebugImageForm();
+
             khm.Start();
             SetupHotkeys();
             SetName();
-        } 
-
+        }
         private void SetName()
         {
             this.Name = "Karc's Elden Ring Death Counter";
@@ -101,11 +136,11 @@ namespace EldenRingDeathCounter
         {
             khm.UnregisterAll();
             // Load prefered keys or defaults:
-            int incrementKeyCode = Settings.Default.IncrementKeyCode;
-            int decrementKeyCode = Settings.Default.DecrementKeyCode;
+            int startPauseKeyCode = Settings.Default.StartPause;
+            int resetKeyCode = Settings.Default.Reset;
 
-            khm.RegisterHotkey(NonInvasiveKeyboardHookLibrary.ModifierKeys.Control, KeyInterop.VirtualKeyFromKey((Key) decrementKeyCode), DecrementDeathCount);
-            khm.RegisterHotkey(NonInvasiveKeyboardHookLibrary.ModifierKeys.Control, KeyInterop.VirtualKeyFromKey((Key) incrementKeyCode), IncrementDeathCount);
+            khm.RegisterHotkey(NonInvasiveKeyboardHookLibrary.ModifierKeys.Control, KeyInterop.VirtualKeyFromKey((Key) startPauseKeyCode), StartPause);
+            khm.RegisterHotkey(NonInvasiveKeyboardHookLibrary.ModifierKeys.Control, KeyInterop.VirtualKeyFromKey((Key)resetKeyCode), Reset);
         }
 
         private void IncrementDeathCount()
@@ -140,12 +175,7 @@ namespace EldenRingDeathCounter
             });
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            Reset();
-        }
-
-        private void button3_Click(object sender, EventArgs e)
+        private void StartPause()
         {
             if (running)
                 detectionThread.Abort();
@@ -154,7 +184,20 @@ namespace EldenRingDeathCounter
 
             running = !running;
 
-            button3.Text = running ? "Pause" : "Start";
+            button3.BeginInvoke((MethodInvoker)delegate ()
+            {
+                button3.Text = running ? "Pause" : "Start";
+            });
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Reset();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            StartPause();
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -165,6 +208,19 @@ namespace EldenRingDeathCounter
         private void button5_Click(object sender, EventArgs e)
         {
             DecrementDeathCount();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            RebindPopup rebindPopup = new RebindPopup();
+            rebindPopup.ShowDialog(this);
+            SetupHotkeys();
+        }
+
+        private void cmsMenuItem_Click(object sender, EventArgs e)
+        {
+            debugForm = new DebugImageForm();
+            debugForm.Show();
         }
     }
 }

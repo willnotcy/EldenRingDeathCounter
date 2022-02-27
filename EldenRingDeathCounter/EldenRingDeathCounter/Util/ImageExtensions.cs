@@ -14,7 +14,9 @@ namespace EldenRingDeathCounter.Util
     {
         private static readonly Vector4 White = new Vector4(1, 1, 1, 1);
         private static readonly Vector4 Black = new Vector4(0, 0, 0, 1);
+        private static readonly Vector4 Red = new Vector4(1, 0, 0, 1);
         private static readonly Vector4 TargetRed = new Vector4(0.66f, 0, 0, 1);
+
 
 
         public static IImageProcessingContext RedFilter(this IImageProcessingContext context, float threshold)
@@ -22,6 +24,7 @@ namespace EldenRingDeathCounter.Util
          {
              for (int x = 0; x < r.Length; x++)
              {
+                 // Filter on target
                  var p = r[x];
 
                  var difference = p - TargetRed;

@@ -26,24 +26,24 @@ namespace EldenRingDeathCounter.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("55")]
-        public int IncrementKeyCode {
+        public int StartPause {
             get {
-                return ((int)(this["IncrementKeyCode"]));
+                return ((int)(this["StartPause"]));
             }
             set {
-                this["IncrementKeyCode"] = value;
+                this["StartPause"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("44")]
-        public int DecrementKeyCode {
+        [global::System.Configuration.DefaultSettingValueAttribute("45")]
+        public int Reset {
             get {
-                return ((int)(this["DecrementKeyCode"]));
+                return ((int)(this["Reset"]));
             }
             set {
-                this["DecrementKeyCode"] = value;
+                this["Reset"] = value;
             }
         }
     }

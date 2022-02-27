@@ -29,37 +29,54 @@ namespace EldenRingDeathCounter
 
         }
 
+        public void RefreshImage(Image<Rgba32> bmp)
+        {
+            var stream = new System.IO.MemoryStream();
+            bmp.SaveAsBmp(stream);
+            System.Drawing.Image img = System.Drawing.Image.FromStream(stream);
+            UpdateForm(img);
+        }
+
         public void UpdateForm(System.Drawing.Image img)
         {
             pictureBox1.Image = img;
-            textBox1.Text = threshold.ToString();
+
+            textBox1.Invoke((MethodInvoker)delegate ()
+            {
+               textBox1.Text = threshold.ToString();
+            });
         }
 
         public void Refresh()
         {
-            var yes = deathDetector.TryDetectDeath(ScreenGrabber.TakeScreenshot(), out bool dead, out Image<Rgba32> debug, threshold);
+            var yes = deathDetector.TryDetectDeath(ScreenGrabber.TakeScreenshot(), out bool dead, out Image<Rgba32> debug, out int pixelCount, threshold);
 
             var stream = new System.IO.MemoryStream();
             debug.SaveAsBmp(stream);
             System.Drawing.Image img = System.Drawing.Image.FromStream(stream);
             UpdateForm(img);
+            UpdatePixelCount(pixelCount);
+        }
+
+        public void UpdatePixelCount(int count)
+        {
+            textBox2.Invoke((MethodInvoker)delegate ()
+            {
+                textBox2.Text = count.ToString();
+            });
+        }
+
+        public void UpdateDuplicates(int duplicates)
+        {
+            textBox3.Invoke((MethodInvoker)delegate ()
+            {
+                textBox3.Text = duplicates.ToString();
+            });
         }
 
         private void DebugImageForm_Load(object sender, EventArgs e)
         {
 
-        }
-
-        private void trackBar1_Scroll(object sender, EventArgs e)
-        {
-            float threshold = 0.2f + (trackBar1.Value / 100);
-
-            var yes = deathDetector.TryDetectDeath(ScreenGrabber.TakeScreenshot(), out bool dead, out Image<Rgba32> debug, threshold);
-
-            var stream = new System.IO.MemoryStream();
-            debug.SaveAsBmp(stream);
-            System.Drawing.Image img = System.Drawing.Image.FromStream(stream);
-            UpdateForm(img);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -84,6 +101,16 @@ namespace EldenRingDeathCounter
         private void button3_Click(object sender, EventArgs e)
         {
             Refresh();
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

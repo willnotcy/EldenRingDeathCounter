@@ -21,13 +21,13 @@ namespace EldenRingDeathCounter
 
         private void RebindPopup_Load(object sender, EventArgs e)
         {
-            this.textBox1.Text = CharFromKeyCode(Settings.Default.IncrementKeyCode).ToString();
-            this.textBox2.Text = CharFromKeyCode(Settings.Default.DecrementKeyCode).ToString();
+            this.textBox1.Text = CharFromKeyCode(Settings.Default.StartPause).ToString();
+            this.textBox2.Text = CharFromKeyCode(Settings.Default.Reset).ToString();
         }
 
         private Char CharFromKeyCode(int KeyCode)
         {
-            return (Char)KeyInterop.VirtualKeyFromKey((Key) KeyCode);
+            return (char)KeyInterop.VirtualKeyFromKey((Key) KeyCode);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -43,27 +43,22 @@ namespace EldenRingDeathCounter
 
             if (txt1.Equals(txt2))
             {
-                DisplayError("Can't bind the same key to both functions...");
+                DisplayError("Can't bind the same key to multiple functions...");
                 return;
             }
-  
-            int incrementKeyCode = (int)Enum.Parse(typeof(Key), txt1);
-            int decrementKeyCode = (int)Enum.Parse(typeof(Key), txt2);
 
-            Settings.Default.IncrementKeyCode = incrementKeyCode;
-            Settings.Default.DecrementKeyCode = decrementKeyCode;
+            int startPauseKeyCode = (int)Enum.Parse(typeof(Key), txt1);
+            int resetKeyCode = (int)Enum.Parse(typeof(Key), txt2);
+
+            Settings.Default.StartPause = startPauseKeyCode;
+            Settings.Default.Reset = resetKeyCode;
             Settings.Default.Save();
             DisplayMessage("Updated keybinds");
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            var txt = textBox1.Text.ToUpper();
-
-            if (txt.Length == 0)
-                return;
-
-            textBox1.Text = txt;
+            HandleTextBoxTextChanged((TextBox)sender);
         }
 
         private void DisplayError(string msg)
@@ -78,12 +73,17 @@ namespace EldenRingDeathCounter
 
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
-            var txt = textBox2.Text.ToUpper();
+            HandleTextBoxTextChanged((TextBox)sender);
+        }
+
+        private void HandleTextBoxTextChanged(TextBox txtBox)
+        {
+            var txt = txtBox.Text.ToUpper();
 
             if (txt.Length == 0)
                 return;
 
-            textBox2.Text = txt;
+            txtBox.Text = txt;
         }
     }
 }

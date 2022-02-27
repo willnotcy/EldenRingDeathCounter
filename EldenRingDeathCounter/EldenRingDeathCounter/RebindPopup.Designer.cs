@@ -42,14 +42,14 @@ namespace EldenRingDeathCounter
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(219, 62);
+            this.label1.Size = new System.Drawing.Size(176, 62);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Increment  key:\r\nDecrement key:";
+            this.label1.Text = "Pause/Start \r\nReset         ";
             // 
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(46, 84);
+            this.button1.Location = new System.Drawing.Point(54, 86);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(134, 59);
             this.button1.TabIndex = 1;
@@ -59,7 +59,7 @@ namespace EldenRingDeathCounter
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(237, 17);
+            this.textBox1.Location = new System.Drawing.Point(194, 17);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(34, 20);
             this.textBox1.TabIndex = 2;
@@ -67,7 +67,7 @@ namespace EldenRingDeathCounter
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(237, 48);
+            this.textBox2.Location = new System.Drawing.Point(194, 48);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(34, 20);
             this.textBox2.TabIndex = 3;
@@ -78,11 +78,12 @@ namespace EldenRingDeathCounter
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.ClientSize = new System.Drawing.Size(279, 152);
+            this.ClientSize = new System.Drawing.Size(239, 157);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
+            this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Name = "RebindPopup";
             this.Text = "RebindPopup";
             this.Load += new System.EventHandler(this.RebindPopup_Load);
