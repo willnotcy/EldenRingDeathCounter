@@ -48,7 +48,6 @@ namespace EldenRingDeathCounter
             this.pictureBox1.Size = new System.Drawing.Size(1011, 426);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // trackBar1
             // 
@@ -128,7 +127,6 @@ namespace EldenRingDeathCounter
             this.Controls.Add(this.pictureBox1);
             this.Name = "DebugImageForm";
             this.Text = "DebugImageForm";
-            this.Load += new System.EventHandler(this.DebugImageForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.ResumeLayout(false);

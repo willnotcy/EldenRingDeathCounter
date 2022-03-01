@@ -4,13 +4,16 @@ using System.Windows.Forms;
 
 namespace EldenRingDeathCounter
 {
-    static class Program
+    /// <summary>
+    /// Entry point of the program.
+    /// </summary>
+    public static class Program
     {
         /// <summary>
-        /// The main entry point for the application.
+        /// Defines the entry point of the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        public static void Main()
         {
             NativeMethods.SetProcessDPIAware();
             Application.EnableVisualStyles();

@@ -17,8 +17,6 @@ namespace EldenRingDeathCounter.Util
         private static readonly Vector4 Red = new Vector4(1, 0, 0, 1);
         private static readonly Vector4 TargetRed = new Vector4(0.66f, 0, 0, 1);
 
-
-
         public static IImageProcessingContext RedFilter(this IImageProcessingContext context, float threshold)
          => context.ProcessPixelRowsAsVector4(r =>
          {
@@ -33,40 +31,6 @@ namespace EldenRingDeathCounter.Util
                  r[x] = distance < threshold ? Black : White;
              }
          });
-
-
-        public static int BlackPixelCount(Image<Rgba32> bmp)
-        {
-            int count = 0;
-            int antiCount = 0;
-            HashSet<Rgba32> pixels = new HashSet<Rgba32>();
-
-            bmp.ProcessPixelRows(accessor =>
-            {
-                for (int y = 0; y < accessor.Height; y++)
-                {
-                    Span<Rgba32> pixelRow = accessor.GetRowSpan(y);
-
-                    for (int x = 0; x < pixelRow.Length; x++)
-                    { 
-                        // Get a reference to the pixel at position x
-                        ref Rgba32 pixel = ref pixelRow[x];
-                        pixels.Add(pixel);
-                        if (pixel.R == 0)
-                        {
-                            count++;
-                        } 
-                        else
-                        {
-                            antiCount++;
-                        }
-                    }
-                }
-
-            });
-
-            return count;
-        }
 
         public static IImageProcessingContext Dilate(this IImageProcessingContext context, int radius)
             => context.BoxBlur(radius)

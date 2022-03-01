@@ -24,16 +24,13 @@ namespace EldenRingDeathCounter
         private readonly KeyboardHookManager khm = new KeyboardHookManager();
         private readonly DeathDetector deathDetector = new DeathDetector();
         private readonly long minTimeSinceLastDeath = 100_000_000;
-        private readonly long minTimeSinceLastUpdate = 50_000_000; // Prevent parry stacking??
         private ContextMenu cm = new ContextMenu();
         private bool running = true;
         private Thread detectionThread;
         private int refreshRate = 200;
         private long lastDeath = 0;
 
-        private bool debugMode = false;
         private DebugImageForm debugForm;
-
 
         private int DeathCount { get; set; }
 
@@ -55,47 +52,29 @@ namespace EldenRingDeathCounter
         {
             Stopwatch sw = new Stopwatch();
 
-            int duplicates = 0;
-            int prevDuplicates = 0;
-            long prevTs = 0;
             int i = 0;
             while(true)
             {
                 sw.Restart();
 
-                if(deathDetector.TryDetectDeath(ScreenGrabber.TakeScreenshot(), out bool dead, out Image<Rgba32> debug, out int debugPixelCount))
+                if(deathDetector.TryDetectDeath(ScreenGrabber.TakeScreenshot(), out bool dead, out Image<Rgba32> debug, out string debugReading))
                 {
+                    if (debugForm.Visible)
+                    {
+                        debugForm.RefreshImage(debug);
+                        debugForm.UpdateReading(debugReading);
+                    }
+
                     if (dead)
                     {
                         var now = Stopwatch.GetTimestamp();
 
-                        if(now - prevTs > minTimeSinceLastUpdate)
+                        if (now - lastDeath > minTimeSinceLastDeath)
                         {
-                            duplicates = 0;
-                        }
-
-                        if (now - lastDeath > minTimeSinceLastDeath && duplicates > 1)
-                        {
-                            prevDuplicates = duplicates;
-                            duplicates = 0;
                             lastDeath = Stopwatch.GetTimestamp();
                             Console.WriteLine("You died!");
                             IncrementDeathCount();
-                        } else
-                        {
-                            duplicates++;
-                        }
-
-
-                        if (debugForm.Visible)
-                        {
-                            debugForm.RefreshImage(debug);
-                            debugForm.UpdatePixelCount(debugPixelCount);
-                            debugForm.UpdateDuplicates(prevDuplicates);
-                        }
-
-
-                        prevTs = now;
+                        } 
                     }
                 }
 
