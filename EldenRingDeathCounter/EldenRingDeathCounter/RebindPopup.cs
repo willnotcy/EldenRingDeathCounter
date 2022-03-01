@@ -54,6 +54,8 @@ namespace EldenRingDeathCounter
             Settings.Default.Reset = resetKeyCode;
             Settings.Default.Save();
             DisplayMessage("Updated keybinds");
+
+            this.Close();
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
