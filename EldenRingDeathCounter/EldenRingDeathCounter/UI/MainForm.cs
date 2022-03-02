@@ -57,7 +57,7 @@ namespace EldenRingDeathCounter
             {
                 sw.Restart();
 
-                if(deathDetector.TryDetectDeath(ScreenGrabber.TakeScreenshot(), out bool dead, out Image<Rgba32> debug, out string debugReading))
+                if(deathDetector.TryDetectDeath(ScreenGrabber.TakeScreenshot(), out Image<Rgba32> debug, out string debugReading))
                 {
                     if (debugForm.Visible)
                     {
@@ -65,17 +65,14 @@ namespace EldenRingDeathCounter
                         debugForm.UpdateReading(debugReading);
                     }
 
-                    if (dead)
-                    {
-                        var now = Stopwatch.GetTimestamp();
+                    var now = Stopwatch.GetTimestamp();
 
-                        if (now - lastDeath > minTimeSinceLastDeath)
-                        {
-                            lastDeath = Stopwatch.GetTimestamp();
-                            Console.WriteLine("You died!");
-                            IncrementDeathCount();
-                        } 
-                    }
+                    if (now - lastDeath > minTimeSinceLastDeath)
+                    {
+                        lastDeath = Stopwatch.GetTimestamp();
+                        Console.WriteLine("You died!");
+                        IncrementDeathCount();
+                    } 
                 }
 
                 sw.Stop();

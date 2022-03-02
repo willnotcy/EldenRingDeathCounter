@@ -43,7 +43,7 @@ namespace EldenRingDeathCounter
 
         public void Refresh()
         {
-            var yes = deathDetector.TryDetectDeath(ScreenGrabber.TakeScreenshot(), out bool dead, out Image<Rgba32> debug, out string debugReading, threshold);
+            var yes = deathDetector.TryDetectDeath(ScreenGrabber.TakeScreenshot(), out Image<Rgba32> debug, out string debugReading);
 
             var stream = new System.IO.MemoryStream();
             debug.SaveAsBmp(stream);
