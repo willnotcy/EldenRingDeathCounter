@@ -23,6 +23,7 @@ namespace EldenRingDeathCounter
     {
         private readonly KeyboardHookManager khm = new KeyboardHookManager();
         private readonly DeathDetector deathDetector = new DeathDetector();
+        private readonly LocationDetector locationDetector = new LocationDetector();
         private readonly long minTimeSinceLastDeath = 100_000_000;
         private ContextMenu cm = new ContextMenu();
         private bool running = true;
@@ -57,11 +58,11 @@ namespace EldenRingDeathCounter
             {
                 sw.Restart();
 
-                if(deathDetector.TryDetectDeath(ScreenGrabber.TakeScreenshot(), out Image<Rgba32> debug, out string debugReading))
+                if (deathDetector.TryDetectDeath(ScreenGrabber.TakeScreenshot(), out Image<Rgba32> debug, out string debugReading))
                 {
                     if (debugForm.Visible)
                     {
-                        debugForm.RefreshImage(debug);
+                        debugForm.RefreshDeathImage(debug);
                         debugForm.UpdateReading(debugReading);
                     }
 
@@ -72,8 +73,27 @@ namespace EldenRingDeathCounter
                         lastDeath = Stopwatch.GetTimestamp();
                         Console.WriteLine("You died!");
                         IncrementDeathCount();
-                    } 
+                    }
                 }
+
+                //if (locationDetector.TryDetectLocation(ScreenGrabber.TakeScreenshot(), out string location, out Image<Rgba32> debugLocation, out string debugLocationReading))
+                //{
+                //    if (debugForm.Visible)
+                //    {
+                //        debugForm.RefreshLocationImage(debugLocation);
+                //        debugForm.UpdateReading(debugLocationReading);
+                //    }
+
+                //    var now = Stopwatch.GetTimestamp();
+
+                //    Console.WriteLine($"Detected location: {debugLocationReading}");
+                //}
+
+                //if (debugForm.Visible)
+                //{
+                //    debugForm.RefreshDeathDebugImage(debug);
+                //    debugForm.RefreshLocationDebugImage(debugLocation);
+                //}
 
                 sw.Stop();
                 long elapsedTime = sw.ElapsedMilliseconds;

@@ -23,12 +23,39 @@ namespace EldenRingDeathCounter
         {
             InitializeComponent();
         }
-        public void RefreshImage(Image<Rgba32> bmp)
+        public void RefreshDeathImage(Image<Rgba32> bmp)
         {
             var stream = new System.IO.MemoryStream();
             bmp.SaveAsBmp(stream);
             System.Drawing.Image img = System.Drawing.Image.FromStream(stream);
             UpdateForm(img);
+        }
+
+        public void RefreshDeathDebugImage(Image<Rgba32> bmp)
+        {
+            var stream = new System.IO.MemoryStream();
+            bmp.SaveAsBmp(stream);
+            System.Drawing.Image img = System.Drawing.Image.FromStream(stream);
+
+            pictureBox2.Image = img;
+        }
+
+        public void RefreshLocationImage(Image<Rgba32> bmp)
+        {
+            var stream = new System.IO.MemoryStream();
+            bmp.SaveAsBmp(stream);
+            System.Drawing.Image img = System.Drawing.Image.FromStream(stream);
+
+            pictureBox3.Image = img;
+        }
+
+        public void RefreshLocationDebugImage(Image<Rgba32> bmp)
+        {
+            var stream = new System.IO.MemoryStream();
+            bmp.SaveAsBmp(stream);
+            System.Drawing.Image img = System.Drawing.Image.FromStream(stream);
+
+            pictureBox4.Image = img;
         }
 
         public void UpdateForm(System.Drawing.Image img)

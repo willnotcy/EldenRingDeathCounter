@@ -2,6 +2,7 @@
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using System;
+using System.Numerics;
 using TesserNet;
 
 namespace EldenRingDeathCounter.Util
@@ -12,7 +13,7 @@ namespace EldenRingDeathCounter.Util
         {
             PageSegmentation = PageSegmentation.Line,
             Numeric = true,
-            Whitelist = "ABCDEFGHIJKLMNOPQRSTUVXYZ",
+            Whitelist = "ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvxyz",
         });
 
         private float threshold = 0.24f;
@@ -25,7 +26,7 @@ namespace EldenRingDeathCounter.Util
             return true;
         }
 
-        protected bool TryDetect(Image<Rgba32> bmp, Func<string, bool> matcher, out string result, out Image<Rgba32> debug, out string debugReading)
+        protected bool TryDetect(Image<Rgba32> bmp, Func<string, bool> matcher, Vector4 targetColor, out string result, out Image<Rgba32> debug, out string debugReading)
         {
             if (bmp is null)
             {
@@ -37,7 +38,7 @@ namespace EldenRingDeathCounter.Util
 
             // Prepare image for OCR
             bmp.Mutate(x => x
-            .RedFilter(threshold)
+            .ColorFilter(threshold, targetColor)
             .Dilate(3));
 
             debug = bmp.Clone();
