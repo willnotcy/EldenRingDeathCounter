@@ -1,4 +1,5 @@
-﻿using EldenRingDeathCounter.Properties;
+﻿using EldenRingDeathCounter.Model;
+using EldenRingDeathCounter.Properties;
 using EldenRingDeathCounter.Util;
 using NonInvasiveKeyboardHookLibrary;
 using SixLabors.ImageSharp;
@@ -28,8 +29,11 @@ namespace EldenRingDeathCounter
         private ContextMenu cm = new ContextMenu();
         private bool running = true;
         private Thread detectionThread;
-        private int refreshRate = 200;
+        private int refreshRate = 500;
         private long lastDeath = 0;
+
+        private ILocation currentLocation;
+        private ILocation lastLocation;
 
         private DebugImageForm debugForm;
 
@@ -76,24 +80,34 @@ namespace EldenRingDeathCounter
                     }
                 }
 
-                //if (locationDetector.TryDetectLocation(ScreenGrabber.TakeScreenshot(), out string location, out Image<Rgba32> debugLocation, out string debugLocationReading))
-                //{
-                //    if (debugForm.Visible)
-                //    {
-                //        debugForm.RefreshLocationImage(debugLocation);
-                //        debugForm.UpdateReading(debugLocationReading);
-                //    }
+                if (locationDetector.TryDetectLocation(ScreenGrabber.TakeScreenshot(), out ILocation location, out Image<Rgba32> debugLocation, out string debugLocationReading))
+                {
+                    Console.WriteLine($"Detected location: {location}");
+                    if (debugForm.Visible)
+                    {
+                        debugForm.RefreshLocationImage(debugLocation);
+                        debugForm.UpdateReading(debugLocationReading);
+                    }
 
-                //    var now = Stopwatch.GetTimestamp();
+                    if (currentLocation is null || currentLocation != location)
+                    {
+                        if(currentLocation.MultiRegion)
+                        {
+                            location.Region = currentLocation.Region;
+                        }
 
-                //    Console.WriteLine($"Detected location: {debugLocationReading}");
-                //}
+                        lastLocation = currentLocation;
+                        currentLocation = location;
 
-                //if (debugForm.Visible)
-                //{
-                //    debugForm.RefreshDeathDebugImage(debug);
-                //    debugForm.RefreshLocationDebugImage(debugLocation);
-                //}
+                        UpdateLocation();
+                    }
+                }
+
+                if (debugForm.Visible)
+                {
+                    //debugForm.RefreshDeathDebugImage(debug);
+                    debugForm.RefreshLocationDebugImage(debugLocation);
+                }
 
                 sw.Stop();
                 long elapsedTime = sw.ElapsedMilliseconds;
@@ -126,6 +140,19 @@ namespace EldenRingDeathCounter
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            Screen secondaryScreen = Screen.PrimaryScreen; // Failsafe
+            foreach (var screen in Screen.AllScreens)
+            {
+                if(!screen.Primary)
+                {
+                    secondaryScreen = screen;
+                }
+            }
+
+            var formBounds = this.Bounds;
+
+            this.StartPosition = FormStartPosition.Manual;
+            this.Bounds = new System.Drawing.Rectangle(secondaryScreen.Bounds.X, secondaryScreen.Bounds.Y, formBounds.Width, formBounds.Height);
         }
 
         private void SetupHotkeys()
@@ -159,6 +186,14 @@ namespace EldenRingDeathCounter
             label2.BeginInvoke((MethodInvoker)delegate ()
             {
                 label2.Text = DeathCount.ToString();
+            });
+        }
+
+        private void UpdateLocation()
+        {
+            label3.BeginInvoke((MethodInvoker)delegate ()
+            {
+                label3.Text = $"{currentLocation}";
             });
         }
 
@@ -217,6 +252,11 @@ namespace EldenRingDeathCounter
         {
             debugForm = new DebugImageForm();
             debugForm.Show();
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

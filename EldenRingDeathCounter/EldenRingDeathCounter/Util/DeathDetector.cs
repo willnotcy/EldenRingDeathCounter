@@ -11,21 +11,25 @@ namespace EldenRingDeathCounter.Util
     {
         private static readonly Vector4 TargetRed = new Vector4(0.66f, 0, 0, 1);
 
+        protected override float XOffset => 0.61f;
+
+        protected override float YOffset => 0.535f;
+
+        protected override float WidthOffset => 0.22f;
+
+        protected override float HeightOffset => 0.07f;
+
         public bool TryDetectDeath(Image<Rgba32> bmp, out Image<Rgba32> debug, out string debugReading)
         {
-            if(TryCropImage(bmp, GetBounds(bmp), out Image<Rgba32> cropped))
-            {
-                return TryDetect(bmp, (location) => { return location.Equals("YOUDIED"); }, TargetRed ,out string result, out debug, out debugReading);
-            }
-
             debug = null;
             debugReading = "";
-            return false;
-        }
 
-        private Rectangle GetBounds(Image<Rgba32> bmp)
-        {
-            return new Rectangle((int)(bmp.Width - (bmp.Width * 0.61)), (int)(bmp.Height - (bmp.Height * 0.535)), (int)(bmp.Width * 0.22), (int)(bmp.Height * 0.07));
+            if (TryCropImage(bmp, out Image<Rgba32> cropped))
+            {
+                return TryDetect(cropped, (location) => { return location.Equals("youdied"); }, TargetRed ,out string result, out debug, out debugReading);
+            }
+
+            return false;
         }
     }
 }

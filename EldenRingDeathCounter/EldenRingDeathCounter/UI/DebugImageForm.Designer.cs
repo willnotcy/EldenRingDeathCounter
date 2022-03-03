@@ -57,7 +57,7 @@ namespace EldenRingDeathCounter
             // 
             // trackBar1
             // 
-            this.trackBar1.Location = new System.Drawing.Point(12, 472);
+            this.trackBar1.Location = new System.Drawing.Point(1072, 798);
             this.trackBar1.Maximum = 100;
             this.trackBar1.Name = "trackBar1";
             this.trackBar1.Size = new System.Drawing.Size(365, 45);
@@ -66,7 +66,7 @@ namespace EldenRingDeathCounter
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(383, 444);
+            this.button1.Location = new System.Drawing.Point(1443, 770);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(114, 77);
             this.button1.TabIndex = 2;
@@ -76,7 +76,7 @@ namespace EldenRingDeathCounter
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(503, 444);
+            this.button2.Location = new System.Drawing.Point(1563, 770);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(111, 77);
             this.button2.TabIndex = 3;
@@ -86,7 +86,7 @@ namespace EldenRingDeathCounter
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(12, 523);
+            this.textBox1.Location = new System.Drawing.Point(1072, 849);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(100, 20);
             this.textBox1.TabIndex = 4;
@@ -94,7 +94,7 @@ namespace EldenRingDeathCounter
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(637, 461);
+            this.button3.Location = new System.Drawing.Point(1697, 787);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(245, 94);
             this.button3.TabIndex = 5;
@@ -104,7 +104,7 @@ namespace EldenRingDeathCounter
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(223, 523);
+            this.textBox2.Location = new System.Drawing.Point(1283, 849);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(100, 20);
             this.textBox2.TabIndex = 6;
@@ -112,7 +112,7 @@ namespace EldenRingDeathCounter
             // 
             // textBox3
             // 
-            this.textBox3.Location = new System.Drawing.Point(223, 546);
+            this.textBox3.Location = new System.Drawing.Point(1283, 872);
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(100, 20);
             this.textBox3.TabIndex = 7;
@@ -128,17 +128,17 @@ namespace EldenRingDeathCounter
             // 
             // pictureBox3
             // 
-            this.pictureBox3.Location = new System.Drawing.Point(710, 13);
+            this.pictureBox3.Location = new System.Drawing.Point(726, 12);
             this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(665, 203);
+            this.pictureBox3.Size = new System.Drawing.Size(764, 327);
             this.pictureBox3.TabIndex = 9;
             this.pictureBox3.TabStop = false;
             // 
             // pictureBox4
             // 
-            this.pictureBox4.Location = new System.Drawing.Point(710, 235);
+            this.pictureBox4.Location = new System.Drawing.Point(12, 444);
             this.pictureBox4.Name = "pictureBox4";
-            this.pictureBox4.Size = new System.Drawing.Size(665, 203);
+            this.pictureBox4.Size = new System.Drawing.Size(979, 381);
             this.pictureBox4.TabIndex = 10;
             this.pictureBox4.TabStop = false;
             // 
@@ -146,7 +146,7 @@ namespace EldenRingDeathCounter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1387, 578);
+            this.ClientSize = new System.Drawing.Size(2090, 996);
             this.Controls.Add(this.pictureBox4);
             this.Controls.Add(this.pictureBox3);
             this.Controls.Add(this.pictureBox2);
