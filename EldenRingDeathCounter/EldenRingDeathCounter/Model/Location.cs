@@ -10,7 +10,6 @@ namespace EldenRingDeathCounter.Model
     {
         public string Name { get; set; }
         public IRegion Region { get; set; }
-        public bool MultiRegion { get; set; } = false;
 
         public override string ToString()
         {

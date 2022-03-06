@@ -42,56 +42,44 @@ namespace EldenRingDeathCounter.Util
 
         protected float HeightOffset3 => 0.093f;
 
-        public bool TryDetectLocation(Image<Rgba32> bmp, out ILocation location, out Image<Rgba32> debug, out string debugReading)
+        public bool TryDetectLocation(Image<Rgba32> bmp, ILocation currentLocation, out ILocation location, out Image<Rgba32> debug, out string debugReading)
         {
             debug = null;
             debugReading = "";
             location = null;
 
             var clone = bmp.Clone();
-            if (TryCropImage(clone, GetBoundsLoc1(bmp), out Image<Rgba32> cropped))
+            var cropped = CropImage(clone, GetBoundsLoc1(bmp));
+
+            if (TryDetectLocationInCrop(cropped, currentLocation, out location, out debug, out debugReading))
             {
-                if (TryDetectLocationInCrop(cropped, out location, out debug, out debugReading))
-                {
-                    return true;
-                }
+                return true;
             }
 
             clone = bmp.Clone();
-            if (TryCropImage(clone, GetBoundsLoc2(bmp), out cropped))
+            cropped = CropImage(clone, GetBoundsLoc2(bmp));
+            if (TryDetectLocationInCrop(cropped, currentLocation, out location, out debug, out debugReading))
             {
-                if (TryDetectLocationInCrop(cropped, out location, out debug, out debugReading))
-                {
-                    return true;
-                }
+                return true;
             }
 
             clone = bmp.Clone();
-            if (TryCropImage(clone, GetBoundsLoc3(bmp), out cropped))
-            {
-                if (TryDetectLocationInCrop(cropped, out location, out debug, out debugReading))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            cropped = CropImage(clone, GetBoundsLoc3(bmp));
+            return TryDetectLocationInCrop(cropped, currentLocation, out location, out debug, out debugReading);
         }
 
-        private bool TryDetectLocationInCrop(Image<Rgba32> cropped, out ILocation location, out Image<Rgba32> debug, out string debugReading)
+        private bool TryDetectLocationInCrop(Image<Rgba32> cropped, ILocation currentLocation, out ILocation location, out Image<Rgba32> debug, out string debugReading)
         {
             debug = null;
             debugReading = "";
             location = null;
 
-            if(TryDetect(cropped, (name) => { return _helper.ValidLocation(name); }, TargetWhite, out string locationName, out debug, out debugReading))
+            if(TryDetect(cropped, TargetWhite, out string locationName, out debug, out debugReading))
             {
-                return _helper.TryGetLocation(locationName, out location);
+                return _helper.TryGetLocation(locationName, currentLocation, out location);
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         protected Rectangle GetBoundsLoc1(Image<Rgba32> bmp)

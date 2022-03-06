@@ -18,25 +18,24 @@ namespace EldenRingDeathCounter.Util
         {
             PageSegmentation = PageSegmentation.Line,
             Numeric = false,
-            Whitelist = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'",
+            Whitelist = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',",
         });
 
         protected virtual float Threshold { get; } = 0.24f;
-        protected bool TryCropImage(Image<Rgba32> bmp, out Image<Rgba32> cropped)
+        protected Image<Rgba32> CropImage(Image<Rgba32> bmp)
         {
-            return TryCropImage(bmp, GetBounds(bmp), out cropped);
+            return CropImage(bmp, GetBounds(bmp));
         }
 
-        protected bool TryCropImage(Image<Rgba32> bmp, Rectangle bounds, out Image<Rgba32> cropped)
+        protected Image<Rgba32> CropImage(Image<Rgba32> bmp, Rectangle bounds)
         {
             bmp.Mutate(
                 x => x.Crop(bounds));
-            cropped = bmp.Clone();
 
-            return true;
+            return bmp;
         }
 
-        protected bool TryDetect(Image<Rgba32> bmp, Func<string, bool> matcher, Vector4 targetColor, out string result, out Image<Rgba32> debug, out string debugReading)
+        protected bool TryDetect(Image<Rgba32> bmp, Vector4 targetColor, out string result, out Image<Rgba32> debug, out string debugReading)
         {
             if (bmp is null)
             {
@@ -59,15 +58,10 @@ namespace EldenRingDeathCounter.Util
             }
 
             debugReading = reading;
+            result = reading;
             Console.WriteLine($"Read: {reading}");
 
-            if (matcher(reading))
-            {
-                result = reading;
-                return true;
-            }
-
-            return false;
+            return true;
         }
 
 
@@ -86,7 +80,7 @@ namespace EldenRingDeathCounter.Util
                 Console.WriteLine(e.Message);
             }
 
-            if (reading.Length > 0)
+            if (reading.Length > 2)
             {
                 return true;
             }

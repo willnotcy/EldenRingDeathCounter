@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace EldenRingDeathCounter.Model
 {
-    public interface IRegion
+    public class Boss : IBoss
     {
         public string Name { get; set; }
-        public List<ILocation> Locations { get; set; }
-        public List<IRegion> SubRegions { get; set; }
-        public IRegion ParentRegion { get; set; }
+        public IRegion Region { get; set; }
+        public string Variant { get; set; }
     }
 }

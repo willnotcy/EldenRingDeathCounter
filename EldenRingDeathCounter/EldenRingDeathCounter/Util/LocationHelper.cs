@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace EldenRingDeathCounter.Util
@@ -11,7 +12,7 @@ namespace EldenRingDeathCounter.Util
     public class LocationHelper
     {
         private readonly static LocationHelper instance = new();
-        private readonly Dictionary<string, ILocation> locations = new();
+        private readonly List<IRegion> regions = new();
         private readonly string resourcePath = "../../../Resources/Regions/";
         
         private LocationHelper()
@@ -28,54 +29,92 @@ namespace EldenRingDeathCounter.Util
             {
                 string regionName = Path.GetFileNameWithoutExtension(file);
 
-                var region = new Region() { Name = regionName};
-                var location = new Location() { Name = regionName, Region = region };
-                locations.Add(regionName.Replace(" ", "").ToLower(), location);
-
-                if(regionName.Equals("Legacy Dungeons"))
-                {
-                    region.LegacyDungeon = true;
-                }
-                if (regionName.Equals("Special"))
-                {
-                    region.Special = true;
-                }
-                if (regionName.Equals("Undergound"))
-                {
-                    region.Underground = true;
-                }
+                var mainRegion = new Region() { Name = regionName, Locations = new(), ParentRegion = null, SubRegions = new() };
+                var currentRegion = mainRegion;
 
                 using (StreamReader reader = File.OpenText(file))
                 {
                     while (!reader.EndOfStream)
                     {
                         string locationName = reader.ReadLine();
-                        string key = locationName.Replace(" ", "").ToLower();
 
-                        location = new Location() { Name = locationName, Region = region };
-
-                        if(locations.ContainsKey(key))
+                        if(locationName.Contains("$"))
                         {
-                            location.MultiRegion = true;
-                            locations[key] = location;
+                            if(!currentRegion.Name.Equals(mainRegion.Name))
+                            {
+                                mainRegion.SubRegions.Add(currentRegion);
+                            }
 
-                        } else
-                        {
-                            locations.Add(key, location);
+                            var subRegionName = Regex.Match(locationName, @"(?<=[$])(.*)(?=[$])").Value.Trim();
+
+                            currentRegion = new Region { Name = subRegionName, Locations = new(), ParentRegion = mainRegion, SubRegions = new() };
+
+                            continue;
                         }
+
+                        var location = new Location() { Name = locationName, Region = currentRegion };
+                        currentRegion.Locations.Add(location);
                     }
                 }
+                mainRegion.SubRegions.Add(currentRegion);
+                regions.Add(mainRegion);
             }
         }
 
-        public bool TryGetLocation(string key, out ILocation location)
+        public bool TryGetLocation(string key, ILocation currentLocation, out ILocation location)
         {
-            return locations.TryGetValue(key, out location);
+            location = null;
+
+            var regionCandidates = regions.Where(r => Format(r.Name).Equals(key));
+
+            if (regionCandidates.Count() == 1)
+            {
+                location = regionCandidates.First().Locations.First();
+                return true;
+            }
+
+
+            var candidates = regions.SelectMany(r => r.Locations)
+                                    .Concat(regions.SelectMany(r => r.SubRegions)
+                                                   .SelectMany(sr => sr.Locations))
+                                    .Where(l => Format(l.Name).Equals(key));
+
+            if (candidates.Count() == 0)
+            {
+                return false;
+            }
+
+            if (candidates.Count() == 1)
+            {
+                location = candidates.First();
+                return true;
+            }
+
+            if(currentLocation == null)
+            {
+                return false;
+            }
+
+            candidates = candidates.Where(l => l.Region.Name.Equals(currentLocation.Region.Name));
+
+            if(candidates.Count() == 1)
+            {
+                location = candidates.First();
+                return true;
+            }
+
+            return location is not null;
         }
 
-        public bool ValidLocation(string key)
+
+        public IRegion GetRegion(string name)
         {
-            return locations.ContainsKey(key);
+            return regions.Where(r => r.Name.Equals(name)).First();
+        }
+
+        private string Format(string str)
+        {
+            return str.Trim().ToLower().Replace(" ", "");
         }
     }
 }

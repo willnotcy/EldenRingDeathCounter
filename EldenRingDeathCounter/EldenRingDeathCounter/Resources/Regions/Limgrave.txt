@@ -1,3 +1,5 @@
+Limgrave
+Artist's Shack
 Bridge of Sacrifice
 Church of Dragon Communion
 Church of Elleh
@@ -6,13 +8,14 @@ Deathtouched Catacombs
 Divine Tower of Limgrave
 Dragon-Burnt Ruins
 Eternal City
+Forlorn Hound Evergaol
 Fort Haight
 Fringefolk Hero's Grave
 Gatefront Ruins
 Groveside Cave
 Highroad Cave
-Kingsrealm Ruins
 Limgrave Tunnels
+Minor Erdtree
 Mistwood
 Mistwood Ruins
 Murkwater Catacombs
@@ -27,4 +30,27 @@ Stormhill Shack
 Stranded Graveyard
 Summonwater Village
 Third Church of Marika
+Warmaster's Shack
 Waypoint Ruins
+Stormveil Castle
+$Weeping Peninsula$
+Ailing Village
+Bridge of Sacrifice
+Callu Baptismal Church
+Castle Morne
+Church of Pilgrimage
+Demi-Human Forest Ruins
+Earthbore Cave
+Forest Lookout Tower
+Fourth Church of Marika
+Impaler's Catacombs
+Isolated Merchant's Shack
+Minor Erdtree
+Morne Tunnel
+Oridys's Rise
+Tombsward Catacombs
+Tombsward Cave
+Tombsward Ruins
+Tower of Return
+Weeping Evergaol
+Witchbane Ruins

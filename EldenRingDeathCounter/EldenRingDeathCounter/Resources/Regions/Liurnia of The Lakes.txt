@@ -1,29 +1,44 @@
+Liurnia of the Lakes
 Academy Crystal Cave
 Academy Gate Town
 Ainsel River Well
 Artist's Shack
 Bellum Church
 Bellum Highway
+Black Knife Catacombs
 Boil Prawn Shack
 Caria Manor
+Carian Study Hall
+Cathedral of Manus Celes
 Chapel of Anticipation
+Chelona's Rise
+Church of Inhibition
 Church of Irith
 Church of Vows
+Cliffbottom Catacombs
+Converted Fringe Tower
 Converted Tower
 Cuckoo's Evergaol
+Deep Ainsel Well
+Divine Tower of Liurnia
+Frenzied Flame Village
 Grand Lift of Dectus
 Highway Lookout Tower
 Jarburg
+Kingsrealm Ruins
 Lakeside Crystal Cave
 Laskyar Ruins
+Lunar Estate Ruins
 Malefactor's Evergaol
 Minor Erdtree
+Moonfolk Ruins
 Purified Ruins
 Ranni's Rise
 Raya Lucaria Academy
 Raya Lucaria Crystal Tunnel
 Renna's Rise
 Revenger's Shack
+Ringleader's Evergaol
 Road's End Catacombs
 Rose Church
 Royal Grave Evergaol
@@ -33,5 +48,5 @@ Slumbering Wolf's Shack
 Stillwater Cave
 Temple Quarter
 Testu's Rise
-Uhl Palace Ruins
+The Four Belfries
 Village of the Albinaurics

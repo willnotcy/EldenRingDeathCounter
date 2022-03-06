@@ -25,15 +25,17 @@ namespace EldenRingDeathCounter
         private readonly KeyboardHookManager khm = new KeyboardHookManager();
         private readonly DeathDetector deathDetector = new DeathDetector();
         private readonly LocationDetector locationDetector = new LocationDetector();
+        private readonly BossDetector bossDetector = new BossDetector();
         private readonly long minTimeSinceLastDeath = 100_000_000;
         private ContextMenu cm = new ContextMenu();
         private bool running = true;
         private Thread detectionThread;
-        private int refreshRate = 500;
+        private int refreshRate = 400;
         private long lastDeath = 0;
 
         private ILocation currentLocation;
         private ILocation lastLocation;
+        private IBoss currentBoss;
 
         private DebugImageForm debugForm;
 
@@ -62,59 +64,86 @@ namespace EldenRingDeathCounter
             {
                 sw.Restart();
 
-                if (deathDetector.TryDetectDeath(ScreenGrabber.TakeScreenshot(), out Image<Rgba32> debug, out string debugReading))
-                {
-                    if (debugForm.Visible)
-                    {
-                        debugForm.RefreshDeathImage(debug);
-                        debugForm.UpdateReading(debugReading);
-                    }
+                var sc = ScreenGrabber.TakeScreenshot();
 
-                    var now = Stopwatch.GetTimestamp();
+                //DeathDetection(sc, out Image<Rgba32> debugDeath);
 
-                    if (now - lastDeath > minTimeSinceLastDeath)
-                    {
-                        lastDeath = Stopwatch.GetTimestamp();
-                        Console.WriteLine("You died!");
-                        IncrementDeathCount();
-                    }
-                }
+                LocationDetection(sc, out Image<Rgba32> debugLocation);
 
-                if (locationDetector.TryDetectLocation(ScreenGrabber.TakeScreenshot(), out ILocation location, out Image<Rgba32> debugLocation, out string debugLocationReading))
-                {
-                    Console.WriteLine($"Detected location: {location}");
-                    if (debugForm.Visible)
-                    {
-                        debugForm.RefreshLocationImage(debugLocation);
-                        debugForm.UpdateReading(debugLocationReading);
-                    }
-
-                    if (currentLocation is null || currentLocation != location)
-                    {
-                        if(currentLocation.MultiRegion)
-                        {
-                            location.Region = currentLocation.Region;
-                        }
-
-                        lastLocation = currentLocation;
-                        currentLocation = location;
-
-                        UpdateLocation();
-                    }
-                }
+                //BossDetection(sc, out Image<Rgba32> debugBoss);
 
                 if (debugForm.Visible)
                 {
-                    //debugForm.RefreshDeathDebugImage(debug);
+                    //debugForm.RefreshDeathDebugImage(debugDeath);
                     debugForm.RefreshLocationDebugImage(debugLocation);
                 }
 
                 sw.Stop();
                 long elapsedTime = sw.ElapsedMilliseconds;
 
-                if(elapsedTime < refreshRate)
+                if (elapsedTime < refreshRate)
                 {
                     Thread.Sleep(refreshRate - (int)elapsedTime);
+                }
+            }
+        }
+
+        private void BossDetection(Image<Rgba32> sc, out Image<Rgba32> debugBoss)
+        {
+            if (bossDetector.TryDetectBoss(sc, currentLocation, out IBoss boss, out debugBoss, out string debugBossReading))
+            {
+                Console.WriteLine($"Detected boss: {boss}");
+                if (debugForm.Visible)
+                {
+                    debugForm.RefreshLocationImage(debugBoss);
+                    debugForm.UpdateReading(debugBossReading);
+                }
+
+                if(currentBoss is null || currentBoss != boss)
+                {
+                    currentBoss = boss;
+                }
+            };
+        }
+
+        private void LocationDetection(Image<Rgba32> sc, out Image<Rgba32> debugLocation)
+        {
+            if (locationDetector.TryDetectLocation(sc, currentLocation, out ILocation location, out debugLocation, out string debugLocationReading))
+            {
+                Console.WriteLine($"Detected location: {location}");
+                if (debugForm.Visible)
+                {
+                    debugForm.RefreshLocationImage(debugLocation);
+                    debugForm.UpdateReading(debugLocationReading);
+                }
+
+                if (currentLocation is null || currentLocation != location)
+                {
+                    lastLocation = currentLocation;
+                    currentLocation = location;
+
+                    UpdateLocation();
+                }
+            }
+        }
+
+        private void DeathDetection(Image<Rgba32> sc, out Image<Rgba32> debugDeath)
+        {
+            if (deathDetector.TryDetectDeath(sc, out debugDeath, out string debugReading))
+            {
+                if (debugForm.Visible)
+                {
+                    debugForm.RefreshDeathImage(debugDeath);
+                    debugForm.UpdateReading(debugReading);
+                }
+
+                var now = Stopwatch.GetTimestamp();
+
+                if (now - lastDeath > minTimeSinceLastDeath)
+                {
+                    lastDeath = Stopwatch.GetTimestamp();
+                    Console.WriteLine("You died!");
+                    IncrementDeathCount();
                 }
             }
         }

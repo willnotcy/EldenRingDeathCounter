@@ -81,9 +81,9 @@ namespace EldenRingDeathCounter
 
         public void UpdateReading(string reading)
         {
-            textBox3.Invoke((MethodInvoker)delegate ()
+            richTextBox1.Invoke((MethodInvoker)delegate ()
             {
-                textBox3.Text = reading.ToString();
+                richTextBox1.AppendText(reading + "\n");
             });
         }
 

@@ -9,14 +9,13 @@ namespace EldenRingDeathCounter.Model
     public class Region : IRegion
     {
         public string Name { get; set; }
-
-        public bool Special { get; set; } = false;
-        public bool LegacyDungeon { get; set; } = false;
-        public bool Underground { get; set; } = false;
+        public List<ILocation> Locations { get; set; }
+        public List<IRegion> SubRegions { get; set; }
+        public IRegion ParentRegion { get; set; }
 
         public override string ToString()
         {
-            return !(Special || LegacyDungeon || Underground) ? $"in {Name}" : "";
+            return ParentRegion is not null ? $"in {Name} ({ParentRegion.Name})" : $"in {Name}";
         }
     }
 }

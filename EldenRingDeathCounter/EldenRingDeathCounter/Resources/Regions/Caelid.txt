@@ -1,20 +1,34 @@
+Caelid
 Abandoned Cave
 Aeonia Swamp
-Swamp of Aeonia
 Caelem Ruins
+Caelid Catacombs
 Caelid Waypoint Ruins
 Cathedral of Dragon Communion
 Church of the Plague
 Forsaken Ruins
 Fort Gael
 Gael Tunnel
+Gaol Cave
 Gowry's Shack
 Minor Erdtree
 Minor Erdtree Catacombs
 Redmane Castle
 Sellia Crystal Tunnel
+Sellia Evergaol
 Sellia Gateway
 Sellia, Town of Sorcery
 Shack of the Rotting
 Smoldering Church
-Sellia Evergoal
+Street of Sages Ruins
+War-Dead Catacombs
+$Dragonbarrow$
+Greyoll's Dragonbarrow
+Bestial Sanctum
+Dragonbarrow Cave
+Divine Tower of Caelid
+Deep Siofra Well
+Fort Faroth
+Isolated Merchant's Shack
+Lenne's Rise
+Sellia Crystal Tunnel

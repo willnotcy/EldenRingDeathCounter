@@ -24,12 +24,19 @@ namespace EldenRingDeathCounter.Util
             debug = null;
             debugReading = "";
 
-            if (TryCropImage(bmp, out Image<Rgba32> cropped))
-            {
-                return TryDetect(cropped, (location) => { return location.Equals("youdied"); }, TargetRed ,out string result, out debug, out debugReading);
-            }
+            var cropped = CropImage(bmp);
 
+            if(TryDetect(cropped, TargetRed, out string result, out debug, out debugReading))
+            {
+                return ValidateReading(result);
+            }
+   
             return false;
+        }
+
+        private bool ValidateReading(string reading)
+        {
+            return reading.Equals("youdied");
         }
     }
 }
