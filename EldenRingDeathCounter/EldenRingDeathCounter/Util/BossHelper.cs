@@ -75,7 +75,7 @@ namespace EldenRingDeathCounter.Util
                 return false;
             }
 
-            candidates = candidates.Where(b => b.Region.Name.Equals(location.Region.Name));
+            candidates = candidates.Where(b => b.Region.Name.Equals(location.Region.Name) || (location.Region.ParentRegion is not null && b.Region.Name.Equals(location.Region.ParentRegion.Name)));
 
             if (candidates.Count() == 1)
             {

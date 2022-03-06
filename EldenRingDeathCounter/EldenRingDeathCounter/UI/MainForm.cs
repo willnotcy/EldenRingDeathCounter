@@ -66,8 +66,8 @@ namespace EldenRingDeathCounter
             {
                 UpdateLocation();
             }
-
-            while(true)
+ 
+            while (true)
             {
                 sw.Restart();
 
@@ -112,6 +112,7 @@ namespace EldenRingDeathCounter
                 {
                     currentBoss = boss;
                 }
+                UpdateBoss();
             };
         }
 
@@ -181,15 +182,27 @@ namespace EldenRingDeathCounter
         private void LoadLocation()
         {
             string lastLocationKey = Settings.Default.LastKnownLocationKey;
+            string lastRegionName = Settings.Default.LastKnownRegionName;
+;
 
             if(lastLocationKey is null || lastLocationKey.Equals(""))
             {
                 return;
             }
 
-            if(locationHelper.TryGetLocation(lastLocationKey, null, out ILocation location))
+            if(lastRegionName is not null && !lastRegionName.Equals(""))
             {
-                currentLocation = location;
+                var region = locationHelper.GetRegion(lastRegionName);
+                if (locationHelper.TryGetLocation(lastLocationKey, region.Locations.First(), out ILocation location))
+                {
+                    currentLocation = location;
+                }
+            } else
+            {
+                if (locationHelper.TryGetLocation(lastLocationKey, null, out ILocation location))
+                {
+                    currentLocation = location;
+                }
             }
         }
 
@@ -252,7 +265,16 @@ namespace EldenRingDeathCounter
             });
 
             Settings.Default.LastKnownLocationKey = currentLocation.Name.ToLower().Replace(" ", "").Trim();
+            Settings.Default.LastKnownRegionName = currentLocation.Region.ParentRegion is null ? currentLocation.Region.Name : currentLocation.Region.ParentRegion.Name;
             Settings.Default.Save();
+        }
+
+        private void UpdateBoss()
+        {
+            label4.BeginInvoke((MethodInvoker)delegate ()
+            {
+                label4.Text = $"{currentBoss.Name}";
+            });
         }
 
         private void Reset()
@@ -313,6 +335,11 @@ namespace EldenRingDeathCounter
         }
 
         private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
         {
 
         }

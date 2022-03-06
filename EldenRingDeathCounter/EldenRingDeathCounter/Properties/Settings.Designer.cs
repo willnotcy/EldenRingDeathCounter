@@ -58,5 +58,17 @@ namespace EldenRingDeathCounter.Properties {
                 this["LastKnownLocationKey"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastKnownRegionName {
+            get {
+                return ((string)(this["LastKnownRegionName"]));
+            }
+            set {
+                this["LastKnownRegionName"] = value;
+            }
+        }
     }
 }
