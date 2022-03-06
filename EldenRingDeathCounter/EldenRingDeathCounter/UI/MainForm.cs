@@ -25,6 +25,7 @@ namespace EldenRingDeathCounter
         private readonly KeyboardHookManager khm = new KeyboardHookManager();
         private readonly DeathDetector deathDetector = new DeathDetector();
         private readonly LocationDetector locationDetector = new LocationDetector();
+        private readonly LocationHelper locationHelper = LocationHelper.Instance;
         private readonly BossDetector bossDetector = new BossDetector();
         private readonly long minTimeSinceLastDeath = 100_000_000;
         private ContextMenu cm = new ContextMenu();
@@ -60,17 +61,25 @@ namespace EldenRingDeathCounter
             Stopwatch sw = new Stopwatch();
 
             int i = 0;
+
+            if(currentLocation is not null)
+            {
+                UpdateLocation();
+            }
+
             while(true)
             {
                 sw.Restart();
 
                 var sc = ScreenGrabber.TakeScreenshot();
 
-                //DeathDetection(sc, out Image<Rgba32> debugDeath);
+                DeathDetection(sc.Clone(), out Image<Rgba32> debugDeath);
 
-                LocationDetection(sc, out Image<Rgba32> debugLocation);
+                LocationDetection(sc.Clone(), out Image<Rgba32> debugLocation);
 
-                //BossDetection(sc, out Image<Rgba32> debugBoss);
+                BossDetection(sc.Clone(), out Image<Rgba32> debugBoss);
+
+                sc.Dispose();
 
                 if (debugForm.Visible)
                 {
@@ -96,7 +105,7 @@ namespace EldenRingDeathCounter
                 if (debugForm.Visible)
                 {
                     debugForm.RefreshLocationImage(debugBoss);
-                    debugForm.UpdateReading(debugBossReading);
+                    debugForm.UpdateReading("Detected boss: {boss}");
                 }
 
                 if(currentBoss is null || currentBoss != boss)
@@ -160,11 +169,28 @@ namespace EldenRingDeathCounter
             khm.Start();
             SetupHotkeys();
             SetName();
+
+            LoadLocation();
         }
         private void SetName()
         {
             this.Name = "Karc's Elden Ring Death Counter";
             this.Text = "Karc's Elden Ring Death Counter";
+        }
+
+        private void LoadLocation()
+        {
+            string lastLocationKey = Settings.Default.LastKnownLocationKey;
+
+            if(lastLocationKey is null || lastLocationKey.Equals(""))
+            {
+                return;
+            }
+
+            if(locationHelper.TryGetLocation(lastLocationKey, null, out ILocation location))
+            {
+                currentLocation = location;
+            }
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -224,6 +250,9 @@ namespace EldenRingDeathCounter
             {
                 label3.Text = $"{currentLocation}";
             });
+
+            Settings.Default.LastKnownLocationKey = currentLocation.Name.ToLower().Replace(" ", "").Trim();
+            Settings.Default.Save();
         }
 
         private void Reset()

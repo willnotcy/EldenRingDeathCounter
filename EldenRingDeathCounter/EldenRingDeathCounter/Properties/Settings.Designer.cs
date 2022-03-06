@@ -46,5 +46,17 @@ namespace EldenRingDeathCounter.Properties {
                 this["Reset"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastKnownLocationKey {
+            get {
+                return ((string)(this["LastKnownLocationKey"]));
+            }
+            set {
+                this["LastKnownLocationKey"] = value;
+            }
+        }
     }
 }
