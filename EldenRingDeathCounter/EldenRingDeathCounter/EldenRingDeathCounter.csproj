@@ -19,6 +19,36 @@
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 	  <NoWarn>1701;1702;1591</NoWarn>
 	</PropertyGroup>
+	<ItemGroup>
+	  <None Remove="Resources\Bosses\*.txt" />
+	</ItemGroup>
+	<ItemGroup>
+	  <EmbeddedResource Include="Resources\Bosses\*.txt" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="Resources\Regions\Ainsel River.txt" />
+	  <None Remove="Resources\Regions\Altus Plateau.txt" />
+	  <None Remove="Resources\Regions\Caelid.txt" />
+	  <None Remove="Resources\Regions\Crumbling Farum Azula.txt" />
+	  <None Remove="Resources\Regions\Deeproot Depths.txt" />
+	  <None Remove="Resources\Regions\Limgrave.txt" />
+	  <None Remove="Resources\Regions\Liurnia of the Lakes.txt" />
+	  <None Remove="Resources\Regions\Mountaintops of the Giants.txt" />
+	  <None Remove="Resources\Regions\Roundtable Hold.txt" />
+	  <None Remove="Resources\Regions\Siofra River.txt" />
+	</ItemGroup>
+	<ItemGroup>
+	  <EmbeddedResource Include="Resources\Regions\Ainsel River.txt" />
+	  <EmbeddedResource Include="Resources\Regions\Altus Plateau.txt" />
+	  <EmbeddedResource Include="Resources\Regions\Caelid.txt" />
+	  <EmbeddedResource Include="Resources\Regions\Crumbling Farum Azula.txt" />
+	  <EmbeddedResource Include="Resources\Regions\Deeproot Depths.txt" />
+	  <EmbeddedResource Include="Resources\Regions\Limgrave.txt" />
+	  <EmbeddedResource Include="Resources\Regions\Liurnia of the Lakes.txt" />
+	  <EmbeddedResource Include="Resources\Regions\Mountaintops of the Giants.txt" />
+	  <EmbeddedResource Include="Resources\Regions\Roundtable Hold.txt" />
+	  <EmbeddedResource Include="Resources\Regions\Siofra River.txt" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -41,10 +71,6 @@
 	<ItemGroup>
 		<Reference Include="System.Windows.Forms" />
 		<Reference Include="WindowsBase" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Resources\Bosses\" />
 	</ItemGroup>
 
 	<ItemGroup>

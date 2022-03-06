@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -13,8 +14,7 @@ namespace EldenRingDeathCounter.Util
     {
         private readonly static LocationHelper instance = new();
         private readonly List<IRegion> regions = new();
-        private readonly string resourcePath = "../../../Resources/Regions/";
-        
+
         private LocationHelper()
         {
             BuildUp();
@@ -25,39 +25,43 @@ namespace EldenRingDeathCounter.Util
 
         private void BuildUp()
         {
-            foreach (string file in Directory.EnumerateFiles(resourcePath, "*", SearchOption.AllDirectories))
+            var embeddedRegionFiles = Assembly.GetExecutingAssembly().GetManifestResourceNames().Where(t => t.Contains(".Regions.")).ToList();
+            
+            foreach (string resource in embeddedRegionFiles)
             {
-                string regionName = Path.GetFileNameWithoutExtension(file);
+                using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource)) {
+                    string regionName = resource.Replace(".txt", "").Split('.').Last();
 
-                var mainRegion = new Region() { Name = regionName, Locations = new(), ParentRegion = null, SubRegions = new() };
-                var currentRegion = mainRegion;
+                    var mainRegion = new Region() { Name = regionName, Locations = new(), ParentRegion = null, SubRegions = new() };
+                    var currentRegion = mainRegion;
 
-                using (StreamReader reader = File.OpenText(file))
-                {
-                    while (!reader.EndOfStream)
+                    using (StreamReader reader = new StreamReader(stream))
                     {
-                        string locationName = reader.ReadLine();
-
-                        if(locationName.Contains("$"))
+                        while (!reader.EndOfStream)
                         {
-                            if(!currentRegion.Name.Equals(mainRegion.Name))
+                            string locationName = reader.ReadLine();
+
+                            if (locationName.Contains("$"))
                             {
-                                mainRegion.SubRegions.Add(currentRegion);
+                                if (!currentRegion.Name.Equals(mainRegion.Name))
+                                {
+                                    mainRegion.SubRegions.Add(currentRegion);
+                                }
+
+                                var subRegionName = Regex.Match(locationName, @"(?<=[$])(.*)(?=[$])").Value.Trim();
+
+                                currentRegion = new Region { Name = subRegionName, Locations = new(), ParentRegion = mainRegion, SubRegions = new() };
+
+                                continue;
                             }
 
-                            var subRegionName = Regex.Match(locationName, @"(?<=[$])(.*)(?=[$])").Value.Trim();
-
-                            currentRegion = new Region { Name = subRegionName, Locations = new(), ParentRegion = mainRegion, SubRegions = new() };
-
-                            continue;
+                            var location = new Location() { Name = locationName, Region = currentRegion };
+                            currentRegion.Locations.Add(location);
                         }
-
-                        var location = new Location() { Name = locationName, Region = currentRegion };
-                        currentRegion.Locations.Add(location);
                     }
+                    mainRegion.SubRegions.Add(currentRegion);
+                    regions.Add(mainRegion);
                 }
-                mainRegion.SubRegions.Add(currentRegion);
-                regions.Add(mainRegion);
             }
         }
 

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -13,9 +14,8 @@ namespace EldenRingDeathCounter.Util
     {
         private readonly static BossHelper instance = new();
         private readonly List<IBoss> bosses = new();
-        private readonly string resourcePath = "../../../Resources/Bosses/";
         private readonly string variantRegex = "(?<=[(]).*(?=[)])";
-        private readonly string bossRegex = ".*(?=[(])";
+        private readonly string bossRegex = ".+?(?=(?:[(]|$))";
         private readonly LocationHelper locationHelper = LocationHelper.Instance;
 
         public static BossHelper Instance { get { return instance; } }
@@ -27,23 +27,28 @@ namespace EldenRingDeathCounter.Util
 
         private void BuildUp()
         {
-            foreach (string file in Directory.EnumerateFiles(resourcePath, "*", SearchOption.AllDirectories))
+            var embeddedRegionFiles = Assembly.GetExecutingAssembly().GetManifestResourceNames().Where(t => t.Contains(".Bosses.")).ToList();
+
+            foreach (string resource in embeddedRegionFiles)
             {
-                string regionName = Path.GetFileNameWithoutExtension(file);
-
-                var region = locationHelper.GetRegion(regionName);
-
-                using (StreamReader reader = File.OpenText(file))
+                using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource))
                 {
-                    while(!reader.EndOfStream)
+                    string regionName = resource.Replace(".txt", "").Split('.').Last();
+
+                    var region = locationHelper.GetRegion(regionName);
+
+                    using (StreamReader reader = new StreamReader(stream))
                     {
-                        var entry = reader.ReadLine();
-                        var name = Regex.Match(entry, bossRegex).Value.Trim();
-                        var variant = Regex.Match(entry, variantRegex).Value ?? "";
+                        while (!reader.EndOfStream)
+                        {
+                            var entry = reader.ReadLine();
+                            var name = Regex.Match(entry, bossRegex).Value.Trim();
+                            var variant = Regex.Match(entry, variantRegex).Value ?? "";
 
-                        var boss = new Boss() { Name = name, Region = region, Variant = variant };
+                            var boss = new Boss() { Name = name, Region = region, Variant = variant };
 
-                        bosses.Add(boss);
+                            bosses.Add(boss);
+                        }
                     }
                 }
             }
