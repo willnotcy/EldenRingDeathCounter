@@ -29,7 +29,7 @@ namespace EldenRingDeathCounter
         private readonly BossDetector bossDetector = new BossDetector();
         private readonly BossCounter bossCounter = BossCounter.Instance;
         private readonly long minTimeSinceLastDeath = 100_000_000;
-        private readonly long maxTimeSinceBoss = 30_000_000;
+        private readonly long maxTimeSinceBoss = 200_000_000;
         private ContextMenu cm = new ContextMenu();
         private bool running = true;
         private Thread detectionThread;
@@ -127,6 +127,8 @@ namespace EldenRingDeathCounter
                 if (now - lastBossTs > maxTimeSinceBoss)
                 {
                     currentBoss = null;
+                    Reset();
+                    UpdateBoss();
                 }
             }
         }
@@ -267,6 +269,12 @@ namespace EldenRingDeathCounter
                 return;
 
             DeathCount--;
+
+            if (currentBoss != null)
+            {
+                bossCounter.TryDecrementCount(currentBoss);
+            }
+
             UpdateCount();
         }
 
@@ -302,7 +310,7 @@ namespace EldenRingDeathCounter
         {
             label4.BeginInvoke((MethodInvoker)delegate ()
             {
-                label4.Text = $"{currentBoss.Name}";
+                label4.Text = currentBoss is null ? "" : $"{currentBoss.Name}";
             });
         }
 

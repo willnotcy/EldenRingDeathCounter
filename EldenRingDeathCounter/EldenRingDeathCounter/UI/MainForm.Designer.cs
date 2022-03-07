@@ -150,9 +150,8 @@ namespace EldenRingDeathCounter
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.Location = new System.Drawing.Point(46, 284);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(143, 37);
+            this.label4.Size = new System.Drawing.Size(0, 37);
             this.label4.TabIndex = 9;
-            this.label4.Text = "No boss";
             this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
             // MainForm

@@ -60,6 +60,25 @@ namespace EldenRingDeathCounter.Util
             return false;
         }
 
+        public bool TryDecrementCount(IBoss boss)
+        {
+            string key = KeyFromBoss(boss);
+
+            if (key.Equals(""))
+            {
+                return false;
+            }
+
+            if (bossCounts.ContainsKey(key))
+            {
+                bossCounts[key] = bossCounts[key] - 1;
+                bossCounts.Flush();
+                return true;
+            }
+
+            return false;
+        }
+
         private string KeyFromBoss(IBoss boss)
         {
             return boss is null ? "" : $"{boss.Name}{boss.Region.Name}".ToLower().Trim().Replace(" ", "");
