@@ -126,9 +126,12 @@ namespace EldenRingDeathCounter
             {
                 if (now - lastBossTs > maxTimeSinceBoss)
                 {
-                    currentBoss = null;
-                    Reset();
-                    UpdateBoss();
+                    if(currentBoss is not null)
+                    {
+                        currentBoss = null;
+                        Reset();
+                        UpdateBoss();
+                    }
                 }
             }
         }
