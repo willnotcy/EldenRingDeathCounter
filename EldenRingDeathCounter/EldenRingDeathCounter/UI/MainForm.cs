@@ -27,16 +27,20 @@ namespace EldenRingDeathCounter
         private readonly LocationDetector locationDetector = new LocationDetector();
         private readonly LocationHelper locationHelper = LocationHelper.Instance;
         private readonly BossDetector bossDetector = new BossDetector();
+        private readonly BossCounter bossCounter = BossCounter.Instance;
         private readonly long minTimeSinceLastDeath = 100_000_000;
+        private readonly long maxTimeSinceBoss = 30_000_000;
         private ContextMenu cm = new ContextMenu();
         private bool running = true;
         private Thread detectionThread;
         private int refreshRate = 400;
         private long lastDeath = 0;
+        private long lastBossTs = 0;
 
         private ILocation currentLocation;
         private ILocation lastLocation;
         private IBoss currentBoss;
+        private IBoss lastBoss;
 
         private DebugImageForm debugForm;
 
@@ -99,9 +103,12 @@ namespace EldenRingDeathCounter
 
         private void BossDetection(Image<Rgba32> sc, out Image<Rgba32> debugBoss)
         {
+            var now = Stopwatch.GetTimestamp();
             if (bossDetector.TryDetectBoss(sc, currentLocation, out IBoss boss, out debugBoss, out string debugBossReading))
             {
                 Console.WriteLine($"Detected boss: {boss}");
+                lastBossTs = now;
+
                 if (debugForm.Visible)
                 {
                     debugForm.RefreshLocationImage(debugBoss);
@@ -110,10 +117,18 @@ namespace EldenRingDeathCounter
 
                 if(currentBoss is null || currentBoss != boss)
                 {
+                    lastBoss = currentBoss;
                     currentBoss = boss;
+                    UpdateCount();
                 }
                 UpdateBoss();
-            };
+            } else
+            {
+                if (now - lastBossTs > maxTimeSinceBoss)
+                {
+                    currentBoss = null;
+                }
+            }
         }
 
         private void LocationDetection(Image<Rgba32> sc, out Image<Rgba32> debugLocation)
@@ -237,6 +252,12 @@ namespace EldenRingDeathCounter
         private void IncrementDeathCount()
         {
             DeathCount++;
+
+            if(currentBoss != null)
+            {
+                bossCounter.TryIncrementCount(currentBoss);
+            }
+
             UpdateCount();
         }
 
@@ -251,6 +272,14 @@ namespace EldenRingDeathCounter
 
         private void UpdateCount()
         {
+            if(currentBoss != null)
+            {
+                if (bossCounter.TryGetCount(currentBoss, out int count))
+                {
+                    DeathCount = count;
+                }
+            }
+
             label2.BeginInvoke((MethodInvoker)delegate ()
             {
                 label2.Text = DeathCount.ToString();

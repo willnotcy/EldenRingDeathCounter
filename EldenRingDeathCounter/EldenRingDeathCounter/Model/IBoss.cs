@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EldenRingDeathCounter.Model
 {
-    public interface IBoss
+    public interface IBoss : IComparable<IBoss>
     {
         public string Name { get; set; }
         public IRegion Region { get; set; }
